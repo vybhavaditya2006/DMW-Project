@@ -1,0 +1,5 @@
+segment,locations,total_listings,mean_pps,median_sqft,mean_bhk,mean_listings,pct_ready,examples
+"Premium (more bedrooms, large homes)",42,1113,9070.76171484868,1883.9704761904761,3.1132339696022986,26.5,0.8992375253532213,"Rajaji Nagar, Koramangala, Malleshwaram, Thigalarapalya, Brookefield"
+Upper mid-market (high volume),39,4666,5712.285468844565,1347.0576923076924,2.60106202561527,119.64102564102564,0.7741176090567067,"Whitefield, Sarjapur Road, Electronic City, Kanakpura Road, Thanisandra"
+Mid-market,100,2224,5487.25253905867,1233.925,2.5258214855345726,22.24,0.914025697426438,"Hulimavu, Jigani, Budigere, Gottigere, Rachenahalli"
+Budget (under construction),33,1248,5217.2444160791965,1269.0651515151515,2.5183875230020645,37.81818181818182,0.48365194539191,"Electronic City Phase II, Hoodi, Chandapura, Hosa Road, 8th Phase JP Nagar"

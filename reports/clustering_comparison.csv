@@ -1,0 +1,4 @@
+method,settings,clusters,noise,silhouette,davies_bouldin,smallest_cluster
+K-Means,"k=4, n_init=20",4,0,0.258037819825196,1.247454579726552,33
+DBSCAN,"eps=1.51, min_samples=10",1,19,,,195
+Agglomerative (Ward),k=4,4,0,0.22341200822625443,1.283589229731084,27
