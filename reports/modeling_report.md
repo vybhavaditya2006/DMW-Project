@@ -1,6 +1,6 @@
 # Modelling report
 
-Generated 2026-11-23 21:43 by `src/modeling.py` from `outputs/clean_data.csv`.
+Generated 2026-11-23 22:22 by `src/modeling.py` from `outputs/clean_data.csv`.
 
 ## Setup
 
@@ -15,20 +15,20 @@ Generated 2026-11-23 21:43 by `src/modeling.py` from `outputs/clean_data.csv`.
 
 | model | target | cv_r2_mean | cv_r2_std | cv_mae_mean | cv_mae_std | cv_rmse_mean | cv_rmse_std | fit_seconds |
 |---|---|---|---|---|---|---|---|---|
-| RandomForest | log_price | 0.685 | 0.0271 | 31.17 | 1.54 | 82.77 | 7.07 | 5.57 |
-| XGBoost | log_price | 0.684 | 0.0303 | 30.60 | 1.05 | 82.83 | 7.21 | 1.36 |
-| GradientBoosting | price | 0.681 | 0.0581 | 33.97 | 1.16 | 82.82 | 7.31 | 0.378 |
-| XGBoost | price | 0.671 | 0.0885 | 31.87 | 0.787 | 83.45 | 9.32 | 1.21 |
-| RandomForest | price | 0.67 | 0.0563 | 31.66 | 1.52 | 84.28 | 6.74 | 5.10 |
-| GradientBoosting | log_price | 0.649 | 0.0353 | 32.85 | 1.27 | 87.54 | 9.59 | 0.381 |
-| Ridge | price | 0.559 | 0.0921 | 39.12 | 1.10 | 97.75 | 14.88 | 0.0115 |
-| Lasso | price | 0.556 | 0.0924 | 39.33 | 1.11 | 98.07 | 14.70 | 0.159 |
-| LinearRegression | price | 0.556 | 0.0923 | 39.38 | 1.11 | 98.09 | 14.69 | 0.0152 |
-| DecisionTree | log_price | 0.522 | 0.0639 | 37.06 | 1.63 | 101.46 | 5.53 | 0.202 |
-| DecisionTree | price | 0.462 | 0.106 | 37.20 | 1.21 | 107.25 | 8.46 | 0.191 |
-| Ridge | log_price | 0.443 | 0.254 | 33.30 | 1.67 | 107.25 | 26.37 | 0.0137 |
+| RandomForest | log_price | 0.685 | 0.0271 | 31.17 | 1.54 | 82.77 | 7.07 | 4.95 |
+| XGBoost | log_price | 0.684 | 0.0303 | 30.60 | 1.05 | 82.83 | 7.21 | 0.808 |
+| GradientBoosting | price | 0.681 | 0.0581 | 33.97 | 1.16 | 82.82 | 7.31 | 0.341 |
+| XGBoost | price | 0.671 | 0.0885 | 31.87 | 0.787 | 83.45 | 9.32 | 0.791 |
+| RandomForest | price | 0.67 | 0.0563 | 31.66 | 1.52 | 84.28 | 6.74 | 4.42 |
+| GradientBoosting | log_price | 0.649 | 0.0353 | 32.85 | 1.27 | 87.54 | 9.59 | 0.346 |
+| Ridge | price | 0.559 | 0.0921 | 39.12 | 1.10 | 97.75 | 14.88 | 0.0107 |
+| Lasso | price | 0.556 | 0.0924 | 39.33 | 1.11 | 98.07 | 14.70 | 0.143 |
+| LinearRegression | price | 0.556 | 0.0923 | 39.38 | 1.11 | 98.09 | 14.69 | 0.0127 |
+| DecisionTree | log_price | 0.522 | 0.0639 | 37.06 | 1.63 | 101.46 | 5.53 | 0.187 |
+| DecisionTree | price | 0.462 | 0.106 | 37.20 | 1.21 | 107.25 | 8.46 | 0.19 |
+| Ridge | log_price | 0.443 | 0.254 | 33.30 | 1.67 | 107.25 | 26.37 | 0.0114 |
 | LinearRegression | log_price | 0.44 | 0.253 | 33.27 | 1.67 | 107.69 | 26.62 | 0.0147 |
-| Lasso | log_price | 0.384 | 0.316 | 36.40 | 2.04 | 111.55 | 25.19 | 0.0138 |
+| Lasso | log_price | 0.384 | 0.316 | 36.40 | 2.04 | 111.55 | 25.19 | 0.0157 |
 
 ## 2. Does predicting log_price help?
 

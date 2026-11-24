@@ -20,6 +20,7 @@ Outputs:
   reports/v1_vs_v2.csv           step-by-step comparison with the v1 model
   reports/modeling_report.md     all of the above, explained
   outputs/best_model.joblib      fitted pipeline + metadata for predict_price()
+  outputs/test_predictions.csv   held-out test rows with actual and predicted price
 
 Usage:
     python -m src.modeling
@@ -71,7 +72,7 @@ def make_preprocessor(categorical=CATEGORICAL, numeric=NUMERIC, log_sqft: bool =
     plain = [c for c in numeric if not (log_sqft and c == "total_sqft")]
     transformers = [("num", StandardScaler(), plain)]
     if log_sqft:
-        transformers.append(("log_sqft", Pipeline([("log", FunctionTransformer(np.log)),
+        transformers.append(("log_sqft", Pipeline([("log", FunctionTransformer(np.log, feature_names_out="one-to-one")),
                                                    ("scale", StandardScaler())]), ["total_sqft"]))
     if categorical:
         # handle_unknown="ignore": a location unseen in training becomes all zeros instead of an error
@@ -483,6 +484,8 @@ def run_modeling(clean: pd.DataFrame | None = None) -> dict:
     scores = test_scores(best.best_estimator_, X_test, y_test)
     log.info("Final model %s (%s): CV R² %.4f, test R² %.4f, test MAE %.2f lakhs",
              best_name, target, best.best_score_, scores["test_r2"], scores["test_mae"])
+    X_test.assign(actual=y_test, predicted=best.best_estimator_.predict(X_test)).to_csv(
+        OUTPUTS_DIR / "test_predictions.csv", index=False)
     final = {"model": best_name, "target": target, "params": short_params(best.best_params_),
              "scores": {"cv_r2": best.best_score_, **scores}}
 
@@ -495,8 +498,8 @@ def run_modeling(clean: pd.DataFrame | None = None) -> dict:
     log.info("4. Refitting %s on all clean rows and saving", best_name)
     deployed = make_pipeline(candidate_models()[best_name], target == "log_price")
     deployed.set_params(**best.best_params_).fit(clean[FEATURES], clean[TARGET])
-    save_bundle(deployed, clean, {"model_name": best_name, "target": target,
-                                  "params": final["params"], "scores": final["scores"]})
+    save_bundle(deployed, clean, {"model_name": best_name, "target": target, "params": final["params"],
+                                  "best_params": best.best_params_, "scores": final["scores"]})
 
     global _bundle_cache
     _bundle_cache = None  # make predict_price() pick up the file just written

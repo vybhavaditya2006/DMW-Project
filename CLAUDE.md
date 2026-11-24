@@ -126,8 +126,8 @@ reports/            # human-readable: profiling HTML, wrangling log, pipeline.lo
 - **`clustering.py`**: build a location-level table (median price per sq ft, median sqft, listing count, ready-to-move share, mean bhk); scale; KMeans with elbow + silhouette to choose k; PCA to 2-D for plotting; name the segments (e.g. premium / mid / budget) from the cluster centres. Optionally DBSCAN to flag anomalous listings.
 - **`association.py`**: discretise listings into items (price band, bhk, sqft band, area type, ready/under construction, location segment from clustering); mlxtend Apriori + `association_rules`; report support, confidence and lift; save top rules.
 - **`visualize.py`**: one function per figure, all saved to `outputs/figures/`; no `plt.show()`.
-- **`run_pipeline.py`**: `profile → wrangle → features → model → cluster → associate → visualize`, with flags such as `--skip-profile` (profiling is the slowest step). Prints a final summary (rows in/out, best model vs v1 baseline).
-- **`app_v2.py`**: tabs for Data Quality (raw profile + missingno), Wrangling Log (step-by-step table, before/after counts), Model Comparison (CV table, chosen model, importance), Location Segments (clusters), Association Rules, and Predict (uses `outputs/best_model.joblib`; only real model output, no invented multipliers).
+- **`run_pipeline.py`** (built): `profile → wrangle → features → model → cluster → associate → visualize`, with flags such as `--skip-profile` (profiling is the slowest step). Prints a final summary (rows in/out, best model vs v1 baseline).
+- **`app_v2.py`** (built): tabs for Data Quality (raw profile + missingno), Wrangling Log (step-by-step table, before/after counts), Model Comparison (CV table, chosen model, importance), Location Segments (clusters), Association Rules, and Predict (uses `outputs/best_model.joblib`; only real model output, no invented multipliers).
 
 ### Demo flow
 1. Show a raw-data problem (e.g. `total_sqft = "34.46Sq. Meter"` or the 43 BHK row).

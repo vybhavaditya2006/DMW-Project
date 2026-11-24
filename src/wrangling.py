@@ -30,7 +30,7 @@ from sklearn.impute import KNNImputer
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.preprocessing import StandardScaler
 
-from src import OUTPUTS_DIR, RANDOM_STATE, RAW_CSV, REPORTS_DIR
+from src import OUTPUTS_DIR, PLOTS, RANDOM_STATE, RAW_CSV, REPORTS_DIR
 from src.profiling import load_raw
 
 log = logging.getLogger(__name__)
@@ -143,7 +143,9 @@ class WranglingLog:
             f"({len(raw) - len(clean):,} rows removed, {(len(raw) - len(clean)) / len(raw):.1%}).",
             "",
             "Raw profile: [`raw_profile.html`](raw_profile.html). "
-            "Missing-value plots: `outputs/figures/missingno_matrix.png`, `outputs/figures/missingno_heatmap.png`.",
+            f"Missing-value plots: `outputs/plots_v2/{PLOTS['missingno_matrix']}`, "
+            f"`outputs/plots_v2/{PLOTS['missingno_heatmap']}`. Before/after distributions and a row-count "
+            f"waterfall: `outputs/plots_v2/{PLOTS['distributions']}`, `outputs/plots_v2/{PLOTS['waterfall']}`.",
             "",
             "## Summary",
             "",

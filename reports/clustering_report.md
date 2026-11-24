@@ -1,6 +1,6 @@
 # Clustering report: location market segments
 
-Generated 2026-11-23 21:42 by `src/clustering.py` from `outputs/clean_data.csv`.
+Generated 2026-11-23 22:22 by `src/clustering.py` from `outputs/clean_data.csv`.
 
 ## 1. Location table
 
@@ -33,14 +33,14 @@ Generated 2026-11-23 21:42 by `src/clustering.py` from `outputs/clean_data.csv`.
 Silhouette is highest at k = 2 (0.284). The k values within 10% of that are 2, 3, 4; among them, k = 4 has the lowest Davies-Bouldin (1.247, also the lowest of all k), so **k = 4**. The elbow of the inertia curve is at k = 5 (silhouette 0.231, more than 10% below the best, so not used). Silhouette alone favours k = 2 ("expensive vs not"), which the PCA plot shows misses the split between large under-construction corridors and small established localities.
 Even the best silhouette (0.284) is modest (values above ~0.5 indicate strong structure): Bengaluru locations form a continuum rather than well-separated groups, so the segments are a useful summary of that continuum, not natural categories.
 
-![elbow and silhouette](../outputs/figures/clustering_elbow_silhouette.png)
+![elbow and silhouette](../outputs/plots_v2/06_kmeans_elbow_silhouette.png)
 
 ## 3. DBSCAN
 
 `min_samples = 10` (2 × number of features, a common rule of thumb). `eps = 1.51` is the knee of the k-distance plot: below it distances grow slowly (points inside dense regions), above it they shoot up (isolated points).
 Result: 1 cluster(s) and 19 noise locations. DBSCAN finds one dense core and calls the outlying locations noise: the data has no separate dense regions, which agrees with the low silhouette scores. Its noise points are the unusual locations (see `dbscan = -1` in `location_clusters.csv`).
 
-![k-distance](../outputs/figures/clustering_kdistance.png)
+![k-distance](../outputs/plots_v2/07_dbscan_k_distance.png)
 
 ## 4. Agglomerative (Ward)
 
@@ -55,7 +55,7 @@ Agreement between K-Means (rows) and Agglomerative (columns) labels:
 | 2 | 1 | 0 | 1 | 37 |
 | 3 | 42 | 0 | 0 | 0 |
 
-![dendrogram](../outputs/figures/clustering_dendrogram.png)
+![dendrogram](../outputs/plots_v2/08_dendrogram.png)
 
 ## 5. Comparison
 
@@ -92,7 +92,7 @@ PC1 and PC2 explain 46% and 25% of the variance (71% together). Loadings (how mu
 | listings | -0.174 | -0.673 |
 | pct_ready | 0.164 | 0.689 |
 
-![PCA](../outputs/figures/clustering_pca.png)
+![PCA](../outputs/plots_v2/09_clusters_pca.png)
 
 ## Caveat for later use
 

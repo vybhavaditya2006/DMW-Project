@@ -16,7 +16,10 @@ Outputs:
   reports/clustering_comparison.csv the three methods side by side
   reports/kmeans_k_selection.csv    inertia, silhouette and Davies-Bouldin for k = 2..10
   reports/clustering_report.md      all of the above, explained
-  outputs/figures/clustering_*.png  elbow/silhouette, k-distance, dendrogram, PCA
+  reports/dbscan_k_distance.csv     sorted k-distances (for the k-distance plot)
+  reports/ward_linkage.csv          the Ward merge tree (for the dendrogram)
+  reports/pca_loadings.csv          PCA loadings and explained variance
+Figures are drawn from these files by src/visualize.py.
 
 Usage:
     python -m src.clustering
@@ -26,19 +29,16 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.cluster.hierarchy import dendrogram, linkage
+from scipy.cluster.hierarchy import linkage
 from sklearn.cluster import DBSCAN, AgglomerativeClustering, KMeans
 from sklearn.decomposition import PCA
 from sklearn.metrics import davies_bouldin_score, silhouette_score
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 
-from src import FIGURES_DIR, OUTPUTS_DIR, RANDOM_STATE, REPORTS_DIR
+from src import OUTPUTS_DIR, PLOTS, RANDOM_STATE, REPORTS_DIR
 from src.wrangling import md_table
 
 log = logging.getLogger(__name__)
@@ -209,90 +209,11 @@ def profile_segments(table: pd.DataFrame, segment: pd.Series) -> pd.DataFrame:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# FIGURES
-# ──────────────────────────────────────────────────────────────────────────────
-def plot_k_selection(ksel: pd.DataFrame, k: int, path: Path) -> Path:
-    fig, ax1 = plt.subplots(figsize=(9, 5))
-    ax1.plot(ksel["k"], ksel["inertia"], "o-", color="#2563eb", label="Inertia (elbow)")
-    ax1.set_xlabel("k (number of clusters)")
-    ax1.set_ylabel("Inertia (within-cluster sum of squares)", color="#2563eb")
-    ax2 = ax1.twinx()
-    ax2.plot(ksel["k"], ksel["silhouette"], "s--", color="#dc2626", label="Silhouette")
-    ax2.set_ylabel("Silhouette score", color="#dc2626")
-    ax1.axvline(k, color="grey", linestyle=":", label=f"chosen k = {k}")
-    fig.legend(loc="upper right", bbox_to_anchor=(0.88, 0.88))
-    ax1.set_title("K-Means: choosing k with the elbow and silhouette", fontweight="bold")
-    fig.tight_layout()
-    fig.savefig(path, dpi=130)
-    plt.close(fig)
-    return path
-
-
-def plot_k_distance(k_dist: np.ndarray, eps: float, min_samples: int, path: Path) -> Path:
-    fig, ax = plt.subplots(figsize=(9, 5))
-    ax.plot(np.arange(len(k_dist)), k_dist, color="#2563eb")
-    ax.axhline(eps, color="#dc2626", linestyle="--", label=f"eps = {eps:.2f} (knee)")
-    ax.set_xlabel("Locations, sorted by distance")
-    ax.set_ylabel(f"Distance to {min_samples}th nearest neighbour")
-    ax.set_title("DBSCAN: k-distance plot for choosing eps", fontweight="bold")
-    ax.legend()
-    fig.tight_layout()
-    fig.savefig(path, dpi=130)
-    plt.close(fig)
-    return path
-
-
-def plot_dendrogram(Z: np.ndarray, k: int, path: Path) -> Path:
-    fig, ax = plt.subplots(figsize=(12, 5))
-    cut = (Z[-k, 2] + Z[-(k - 1), 2]) / 2  # a height between the merges that leave k and k-1 clusters
-    dendrogram(Z, truncate_mode="lastp", p=30, color_threshold=cut, ax=ax, leaf_font_size=8)
-    ax.axhline(cut, color="grey", linestyle="--", label=f"cut for k = {k}")
-    ax.set_xlabel("Locations (cluster sizes in brackets)")
-    ax.set_ylabel("Ward merge distance")
-    ax.set_title("Agglomerative clustering (Ward): dendrogram, last 30 merges", fontweight="bold")
-    ax.legend()
-    fig.tight_layout()
-    fig.savefig(path, dpi=130)
-    plt.close(fig)
-    return path
-
-
-def plot_pca(coords: np.ndarray, pca: PCA, table: pd.DataFrame, segment: pd.Series, path: Path) -> Path:
-    fig, ax = plt.subplots(figsize=(11, 7.5))
-    order = table.assign(segment=segment).groupby("segment")["mean_pps"].mean().sort_values(ascending=False).index
-    colors = plt.get_cmap("tab10")
-    for i, seg in enumerate(order):
-        m = (segment == seg).to_numpy()
-        ax.scatter(coords[m, 0], coords[m, 1], s=18 + 2 * np.sqrt(table["listings"][m]),
-                   alpha=0.75, color=colors(i), label=f"{seg} ({m.sum()})", edgecolors="white", linewidths=0.5)
-    for loc in table["listings"].nlargest(12).index:
-        i = table.index.get_loc(loc)
-        ax.annotate(loc, coords[i], fontsize=7.5, xytext=(4, 3), textcoords="offset points")
-    # Loadings: which original feature each PCA direction follows
-    scale_ = np.abs(coords).max() * 0.6
-    for j, f in enumerate(FEATURES):
-        vx, vy = pca.components_[0, j] * scale_, pca.components_[1, j] * scale_
-        ax.arrow(0, 0, vx, vy, color="black", alpha=0.45, width=0.005, head_width=0.08)
-        # Staggered offsets: mean_pps and mean_bhk point almost the same way and would overlap
-        ax.annotate(f, (vx, vy), xytext=(6, 12 - 10 * j), textcoords="offset points", fontsize=8, alpha=0.8)
-    ev = pca.explained_variance_ratio_
-    ax.set_xlabel(f"PC1 ({ev[0]:.0%} of variance)")
-    ax.set_ylabel(f"PC2 ({ev[1]:.0%} of variance)")
-    ax.set_title("Bengaluru locations by market segment (PCA of the 5 location features)", fontweight="bold")
-    ax.legend(title="Segment (locations)", fontsize=8, loc="best")
-    fig.tight_layout()
-    fig.savefig(path, dpi=130)
-    plt.close(fig)
-    return path
-
-
-# ──────────────────────────────────────────────────────────────────────────────
 # PIPELINE
 # ──────────────────────────────────────────────────────────────────────────────
 def run_clustering(clean: pd.DataFrame | None = None) -> dict:
     clean = pd.read_csv(CLEAN_CSV) if clean is None else clean
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
     table = build_location_table(clean)
     X = scale(table)
@@ -341,18 +262,17 @@ def run_clustering(clean: pd.DataFrame | None = None) -> dict:
     profiles = profile_segments(table, segment)
     profiles.to_csv(REPORTS_DIR / "cluster_profiles.csv", index=False)
 
-    figures = {
-        "k": plot_k_selection(ksel, k, FIGURES_DIR / "clustering_elbow_silhouette.png"),
-        "kdist": plot_k_distance(k_dist, eps, min_samples, FIGURES_DIR / "clustering_kdistance.png"),
-        "dendro": plot_dendrogram(Z, k, FIGURES_DIR / "clustering_dendrogram.png"),
-        "pca": plot_pca(coords, pca, table, segment, FIGURES_DIR / "clustering_pca.png"),
-    }
-    for p in figures.values():
-        log.info("Saved figure: %s", p.name)
+    pd.DataFrame({"rank": np.arange(len(k_dist)), "k_distance": k_dist, "eps": eps,
+                  "min_samples": min_samples}).to_csv(REPORTS_DIR / "dbscan_k_distance.csv", index=False)
+    pd.DataFrame(Z, columns=["left", "right", "distance", "size"]).assign(chosen_k=k).to_csv(
+        REPORTS_DIR / "ward_linkage.csv", index=False)
+    pd.DataFrame(pca.components_.T, index=pd.Index(FEATURES, name="feature"), columns=["pc1", "pc2"]).assign(
+        pc1_variance=pca.explained_variance_ratio_[0], pc2_variance=pca.explained_variance_ratio_[1]).to_csv(
+        REPORTS_DIR / "pca_loadings.csv")
 
     agree = pd.crosstab(km_labels, ag_labels)
     write_report(REPORTS_DIR / "clustering_report.md", table, ksel, k, k_why, eps, min_samples, dendro_k,
-                 comparison, final_method, final_why, profiles, pca, agree, figures)
+                 comparison, final_method, final_why, profiles, pca, agree)
     log.info("Final: %s with %d segments: %s", final_method, len(names), "; ".join(names.values()))
     return {"table": table, "assignments": assignments, "profiles": profiles, "comparison": comparison}
 
@@ -387,7 +307,7 @@ def close_tiers_note(profiles: pd.DataFrame, threshold: float = 0.10) -> list[st
 
 
 def write_report(path, table, ksel, k, k_why, eps, min_samples, dendro_k, comparison, final_method,
-                 final_why, profiles, pca, agree, figures) -> Path:
+                 final_why, profiles, pca, agree) -> Path:
     db = comparison.set_index("method").loc["DBSCAN"]
     loadings = pd.DataFrame(pca.components_.T, index=FEATURES, columns=["PC1", "PC2"]).rename_axis("feature")
     best_sil = ksel["silhouette"].max()
@@ -417,7 +337,7 @@ def write_report(path, table, ksel, k, k_why, eps, min_samples, dendro_k, compar
         "Bengaluru locations form a continuum rather than well-separated groups, so the segments are a useful "
         "summary of that continuum, not natural categories.",
         "",
-        f"![elbow and silhouette](../outputs/figures/{figures['k'].name})",
+        f"![elbow and silhouette](../outputs/plots_v2/{PLOTS['k_selection']})",
         "",
         "## 3. DBSCAN",
         "",
@@ -429,7 +349,7 @@ def write_report(path, table, ksel, k, k_why, eps, min_samples, dendro_k, compar
            "regions, which agrees with the low silhouette scores. Its noise points are the unusual locations "
            "(see `dbscan = -1` in `location_clusters.csv`)." if db["clusters"] < 2 else ""),
         "",
-        f"![k-distance](../outputs/figures/{figures['kdist'].name})",
+        f"![k-distance](../outputs/plots_v2/{PLOTS['k_distance']})",
         "",
         "## 4. Agglomerative (Ward)",
         "",
@@ -441,7 +361,7 @@ def write_report(path, table, ksel, k, k_why, eps, min_samples, dendro_k, compar
         "",
         md_table(agree.rename_axis("kmeans").reset_index().rename(columns=lambda c: f"agg_{c}" if c != "kmeans" else c)),
         "",
-        f"![dendrogram](../outputs/figures/{figures['dendro'].name})",
+        f"![dendrogram](../outputs/plots_v2/{PLOTS['dendrogram']})",
         "",
         "## 5. Comparison",
         "",
@@ -467,7 +387,7 @@ def write_report(path, table, ksel, k, k_why, eps, min_samples, dendro_k, compar
         "",
         md_table(loadings.reset_index()),
         "",
-        f"![PCA](../outputs/figures/{figures['pca'].name})",
+        f"![PCA](../outputs/plots_v2/{PLOTS['clusters']})",
         "",
         "## Caveat for later use",
         "",

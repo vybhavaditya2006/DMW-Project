@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 import missingno as msno
 import pandas as pd
 
-from src import FIGURES_DIR, RAW_CSV, REPORTS_DIR
+from src import FIGURES_DIR, PLOTS, RAW_CSV, REPORTS_DIR
 
 log = logging.getLogger(__name__)
 
@@ -55,7 +55,7 @@ def plot_missingno(df: pd.DataFrame, fig_dir: Path = FIGURES_DIR) -> list[Path]:
 
     ax = msno.matrix(df, figsize=(12, 6), fontsize=10, sparkline=False)
     ax.set_title("Missing values by row (white = missing)", fontsize=13)
-    path = fig_dir / "missingno_matrix.png"
+    path = fig_dir / PLOTS["missingno_matrix"]
     ax.get_figure().savefig(path, bbox_inches="tight", dpi=130)
     plt.close("all")
     paths.append(path)
@@ -64,7 +64,7 @@ def plot_missingno(df: pd.DataFrame, fig_dir: Path = FIGURES_DIR) -> list[Path]:
     gappy = df.loc[:, df.isna().any()]
     ax = msno.heatmap(gappy, figsize=(8, 6), fontsize=10)
     ax.set_title("Nullity correlation (1 = always missing together)", fontsize=13)
-    path = fig_dir / "missingno_heatmap.png"
+    path = fig_dir / PLOTS["missingno_heatmap"]
     ax.get_figure().savefig(path, bbox_inches="tight", dpi=130)
     plt.close("all")
     paths.append(path)

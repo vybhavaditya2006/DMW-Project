@@ -21,3 +21,4 @@ Thumbs.db
 outputs/*.csv
 outputs/*.joblib
 reports/raw_profile.html
+reports/pipeline.log
