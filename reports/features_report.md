@@ -1,6 +1,6 @@
 # Feature importance and selection
 
-Generated 2026-11-24 15:27 by `src/features.py`.
+Generated 2026-11-24 21:14 by `src/features.py`.
 
 Model: the tuned **XGBoost** from `src/modeling.py` (log-log target), refitted on the same 9,593 training rows; held-out test R² 0.639, MAE 29.33 lakhs. The 5 input features become 222 encoded columns (215 location dummies, 4 area_type dummies, 3 numbers).
 

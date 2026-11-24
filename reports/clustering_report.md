@@ -1,6 +1,6 @@
 # Clustering report: location market segments
 
-Generated 2026-11-23 22:22 by `src/clustering.py` from `outputs/clean_data.csv`.
+Generated 2026-11-24 21:06 by `src/clustering.py` from `outputs/clean_data.csv`.
 
 ## 1. Location table
 

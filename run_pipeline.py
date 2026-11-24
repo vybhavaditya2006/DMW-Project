@@ -28,7 +28,7 @@ import time
 from src import OUTPUTS_DIR, REPORTS_DIR
 
 log = logging.getLogger("pipeline")
-KEEP = {".gitkeep"}
+KEEP = {".gitkeep", "v2_summary.md", "demo_script.md"}  # hand-written, not generated
 
 
 def setup_logging() -> None:

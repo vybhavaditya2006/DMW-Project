@@ -1,6 +1,6 @@
 # Wrangling report
 
-Generated 2026-11-23 22:11 by `src/wrangling.py` from `Bengaluru_House_Data.csv`.
+Generated 2026-11-24 20:50 by `src/wrangling.py` from `Bengaluru_House_Data.csv`.
 Raw data: **13,320 rows × 9 columns**. Clean data: **11,992 rows × 15 columns** (1,328 rows removed, 10.0%).
 
 Raw profile: [`raw_profile.html`](raw_profile.html). Missing-value plots: `outputs/plots_v2/00_missingno_matrix.png`, `outputs/plots_v2/00_missingno_heatmap.png`. Before/after distributions and a row-count waterfall: `outputs/plots_v2/01_distributions_before_after.png`, `outputs/plots_v2/02_wrangling_waterfall.png`.

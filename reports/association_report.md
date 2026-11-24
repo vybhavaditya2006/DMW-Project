@@ -1,6 +1,6 @@
 # Association rules
 
-Generated 2026-11-23 22:24 by `src/association.py` from `outputs/clean_data.csv` and the market segments in `reports/location_clusters.csv`.
+Generated 2026-11-24 21:08 by `src/association.py` from `outputs/clean_data.csv` and the market segments in `reports/location_clusters.csv`.
 
 ## 1. Transactions
 
@@ -42,12 +42,12 @@ Apriori grows itemsets level by level and rescans the table for each level; FP-G
 
 | min_support | itemsets | longest_itemset | apriori_ms | apriori_runs | fpgrowth_ms | fpgrowth_runs | fpgrowth_vs_apriori | same_itemsets | max_support_difference |
 |---|---|---|---|---|---|---|---|---|---|
-| 0.01 | 2,614 | 7 | 351.68 | 5 | 43,211 | 1 | 122.87 | 1 | 0 |
-| 0.02 | 1,511 | 7 | 226.79 | 5 | 24,514 | 1 | 108.09 | 1 | 0 |
-| 0.05 | 514 | 6 | 87.18 | 5 | 7,916 | 2 | 90.81 | 1 | 0 |
-| 0.1 | 189 | 5 | 28.30 | 5 | 2,603 | 4 | 92.00 | 1 | 0 |
+| 0.01 | 2,614 | 7 | 400.55 | 5 | 53,246 | 1 | 132.93 | 1 | 0 |
+| 0.02 | 1,511 | 7 | 274.45 | 5 | 27,464 | 1 | 100.07 | 1 | 0 |
+| 0.05 | 514 | 6 | 96.22 | 5 | 8,308 | 2 | 86.35 | 1 | 0 |
+| 0.1 | 189 | 5 | 33.47 | 5 | 2,579 | 4 | 77.06 | 1 | 0 |
 
-Here FP-Growth is **91–123× slower** than Apriori, the opposite of the textbook result. The theory assumes many distinct items and sparse transactions, where Apriori drowns in candidates. This table is the opposite case: only 27 items, and every listing has exactly 7 of them (dense data, long patterns). mlxtend's Apriori counts candidates with vectorised NumPy operations, which is cheap for 27 columns, while its FP-Growth builds and recursively mines the tree in pure Python. The algorithm's complexity matters less than the data shape and the implementation.
+Here FP-Growth is **77–133× slower** than Apriori, the opposite of the textbook result. The theory assumes many distinct items and sparse transactions, where Apriori drowns in candidates. This table is the opposite case: only 27 items, and every listing has exactly 7 of them (dense data, long patterns). mlxtend's Apriori counts candidates with vectorised NumPy operations, which is cheap for 27 columns, while its FP-Growth builds and recursively mines the tree in pure Python. The algorithm's complexity matters less than the data shape and the implementation.
 
 Both algorithms returned identical itemsets with identical supports at every threshold.
 
