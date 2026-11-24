@@ -1,0 +1,26 @@
+column,feature,gain_share
+total_sqft,total_sqft,0.05408229
+location_Rajaji Nagar,location,0.019816907
+location_Electronic City Phase II,location,0.014314037
+location_Chandapura,location,0.01406755
+location_HSR Layout,location,0.013690643
+location_Malleshwaram,location,0.012371266
+location_Koramangala,location,0.012236291
+area_type_Plot Area,area_type,0.011937628
+location_JP Nagar,location,0.010986418
+location_Cunningham Road,location,0.010797845
+location_Indira Nagar,location,0.010672755
+location_Electronic City,location,0.010630479
+location_Begur Road,location,0.010148653
+location_Whitefield,location,0.01010768
+location_Hebbal,location,0.00992925
+location_Devanahalli,location,0.009917551
+location_Banashankari Stage III,location,0.009818264
+location_Sarjapur,location,0.009736079
+location_Basavangudi,location,0.009541635
+location_Attibele,location,0.009281595
+location_Ulsoor,location,0.00893031
+location_Banashankari Stage VI,location,0.0088883005
+location_Raja Rajeshwari Nagar,location,0.008764242
+location_Uttarahalli,location,0.008539096
+location_Kundalahalli,location,0.008473406
